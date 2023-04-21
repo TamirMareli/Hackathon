@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include "csr.h"
+
+int main(void)
+{
+
+    printf("We are 2 team members and our names are:Omer Dahan,Tamir Mareli \n");
+
+    unsigned long mcycle_l_start = csr_read(0xc00);
+    unsigned long mcycle_h_start = csr_read(0xc80);
+
+    int n = 102;
+    int i, a = 0, b = 1, c;
+
+    printf("Fibonacci Series:\n");
+    for (i = 1; i <= n; i++) {
+        printf("%d\n", a);
+        c = a + b;
+        a = b;
+        b = c;
+    }
+
+    unsigned long mcycle_l_end = csr_read(0xc00);
+    unsigned long mcycle_h_end = csr_read(0xc80);
+    unsigned long long result;
+
+
+    if (mcycle_h_end == mcycle_h_start) {
+        result = mcycle_l_end - mcycle_l_start;
+    }
+    else {
+        unsigned long long num1 = ((unsigned long long)mcycle_h_start << 32) | mcycle_l_start;
+        unsigned long long num2 = ((unsigned long long)mcycle_h_end << 32) | mcycle_l_end;
+        result = num1 - num2;
+    }
+    printf("The runtime is: 0x%lx\n", (unsigned long)result); // Use %lx to print as hex
+    return 0;
+}
